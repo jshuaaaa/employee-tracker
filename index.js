@@ -48,8 +48,42 @@ async function init() {
 }
 
 function check(name) {
-    if(name === 'View all departments') {
-    console.log('t')
-    init()
+  if(name === 'View all departments') {
+  db.query(sql ,movieNamed, function (err, results) {
+      console.log(JSON.stringify(results))
+      res.send(JSON.stringify(movieNamed))
+    })
+
+      init()
     }
+
+  if(name === 'View all roles') {
+    
+      init()
+      }
+
+  if(name === 'View all employees') {
+    
+      init()
+      }
+
+
+  if(name === 'View all departments') {
+    
+      init()
+      }
+      
+  if(name === 'View all roles') {
+          
+      init()
+      }
+  if(name === 'View all employees') {
+          
+     init()
+      }
+      
+  if(name === 'View all employees') {
+          
+      init()
+      }
 }
