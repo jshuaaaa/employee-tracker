@@ -1,8 +1,12 @@
+drop database if exists employee_tracker
+
 CREATE DATABASE employee_tracker;
+
+use employee_tracker;
 
 CREATE TABLE department (
     id INT NOT NULL,
-    name VARCHAR(30)
+    name VARCHAR(30) not NULL
 );
 
 CREATE TABLE role (
