@@ -2,8 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require("inquirer");
 const fs = require('fs');
-const { checkPrime } = require('crypto');
-const { allowedNodeEnvironmentFlags } = require('process');
+// Node dependencies
 
 //SQL DB CONNECTIOn
 const db = mysql.createConnection(
@@ -51,7 +50,7 @@ const roleQuestions = [{
   },
   {type: "input",
     message: "Enter your role's department id here: ",
-    name: "department_id: "
+    name: "department_id"
   }
   ]
 
@@ -68,7 +67,23 @@ const roleQuestions = [{
     {type: "input",
     message: "Enter your employee's role id here: ",
     name: "role_id"
-  }]
+  },
+{
+  type: "input",
+  message: "What is their manager's id?: ",
+  name: "manager_id"
+}]
+
+  const updateEmployeeQuestions = [{
+    type: "input",
+    message: "Enter the id of the employee who's role you would like to change: ",
+    name: "id"
+  },
+    {type: "input",
+      message: "Enter the employee's new role id: ",
+      name: "role"
+    },
+    ]
 
 async function init() {
     const response = await inquirer.prompt(questions)
@@ -97,29 +112,35 @@ async function init() {
                 case 'add an employee':
                 addEmployee()
                 break;
+                case 'update an employee role':
+                  updateEmployee()
+                  break;
     }
 }
 
 function check(name, response) {
   if(name === 'View all departments') {
-  db.query(`SELECT * FROM department`, function (err, results) {
-      console.table(results)  
+  db.query(`SELECT * FROM department`, function (err, res) {
+    if (err) throw err;
+    console.table(res);  
     })
 
       init()
     }
 
   if(name === 'View all roles') {
-    db.query(`SELECT * FROM role`, function (err, results) {
-      console.table(results)  
+    db.query(`SELECT * FROM role`, function (err, res) {
+      if (err) throw err;
+      console.table(res);  
     })
     
       init()
       }
 
   if(name === 'View all employees') {
-    db.query(`SELECT * FROM employee`, function (err, results) {
-      console.table(results)  
+    db.query(`SELECT * FROM employee`, function (err, res) {
+      if (err) throw err;
+      console.table(res);  
     })
     
       init()
@@ -127,25 +148,33 @@ function check(name, response) {
 
 
   if(name === 'add a department') {
-    db.query(`INSERT INTO department (name) VALUES (?)`,response, function (err, results) { 
+    db.query(`INSERT INTO department (name) VALUES (?)`,response, function (err, res) { 
+      if (err) throw err;
     })
 
       init()
       }
       
   if(name === 'add a role') {
-    db.query(`INSERT INTO role SET ?`, response, function (err, results) { 
-    })
+    db.query(`INSERT INTO role SET ?`, response, function (err, res) { 
       init()
+    })
+      
       }
   if(name === 'add an employee') {
-    db.query(`INSERT INTO employee SET ?`, response, function (err, results) { 
+    db.query(`INSERT INTO employee SET ?`, response, function (err, res) {
+      if (err) throw err
+      console.log(err)
+      
     })
      init()
       }
       
-  if(name === 'View all employees') {
-          
+  if(name === 'update an employee role') {
+    db.query('UPDATE employee SET role_id=? WHERE id= ?',[response.role, response.id],function(err, res) {
+      if (err) throw err;
+      console.table(res);
+    });
       init()
       }
 }
@@ -164,4 +193,9 @@ async function addRole() {
 async function addEmployee() {
   const response = await inquirer.prompt(employeeQuestions)
   check("add an employee", response)
+}
+
+async function updateEmployee() {
+  const response = await inquirer.prompt(updateEmployeeQuestions)
+  check('update an employee role', response)
 }
