@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const inquirer = require("inquirer");
 const fs = require('fs');
 const { checkPrime } = require('crypto');
+const { allowedNodeEnvironmentFlags } = require('process');
 
 //SQL DB CONNECTIOn
 const db = mysql.createConnection(
@@ -38,6 +39,37 @@ const departmentQuestion = [{
   name: "name"
 }]
 
+
+const roleQuestions = [{
+  type: "input",
+  message: "Enter the role title: ",
+  name: "title"
+},
+  {type: "input",
+    message: "Enter your role's salary here: ",
+    name: "salary"
+  },
+  {type: "input",
+    message: "Enter your role's department id here: ",
+    name: "department_id: "
+  }
+  ]
+
+
+  const employeeQuestions = [{
+    type: "input",
+    message: "Enter the employee's first name: ",
+    name: "first_name"
+  },
+    {type: "input",
+      message: "Enter the employee's last name: ",
+      name: "last_name"
+    },
+    {type: "input",
+    message: "Enter your employee's role id here: ",
+    name: "role_id"
+  }]
+
 async function init() {
     const response = await inquirer.prompt(questions)
 
@@ -59,13 +91,19 @@ async function init() {
                 case 'add a department':
                 addDepartment()
                 break;
+                case 'add a role':
+                addRole()
+                break;
+                case 'add an employee':
+                addEmployee()
+                break;
     }
 }
 
 function check(name, response) {
   if(name === 'View all departments') {
   db.query(`SELECT * FROM department`, function (err, results) {
-      console.log(results)  
+      console.table(results)  
     })
 
       init()
@@ -73,7 +111,7 @@ function check(name, response) {
 
   if(name === 'View all roles') {
     db.query(`SELECT * FROM role`, function (err, results) {
-      console.log(results)  
+      console.table(results)  
     })
     
       init()
@@ -81,7 +119,7 @@ function check(name, response) {
 
   if(name === 'View all employees') {
     db.query(`SELECT * FROM employee`, function (err, results) {
-      console.log(results)  
+      console.table(results)  
     })
     
       init()
@@ -95,12 +133,14 @@ function check(name, response) {
       init()
       }
       
-  if(name === 'View all roles') {
-          
+  if(name === 'add a role') {
+    db.query(`INSERT INTO role SET ?`, response, function (err, results) { 
+    })
       init()
       }
-  if(name === 'View all employees') {
-          
+  if(name === 'add an employee') {
+    db.query(`INSERT INTO employee SET ?`, response, function (err, results) { 
+    })
      init()
       }
       
@@ -114,4 +154,14 @@ function check(name, response) {
 async function addDepartment() {
   const response = await inquirer.prompt(departmentQuestion)
   check("add a department", response.name)
+}
+
+async function addRole() {
+  const response = await inquirer.prompt(roleQuestions)
+  check("add a role", response)
+}
+
+async function addEmployee() {
+  const response = await inquirer.prompt(employeeQuestions)
+  check("add an employee", response)
 }
