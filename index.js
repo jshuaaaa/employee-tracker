@@ -32,6 +32,12 @@ const questions = [{
         name: 'choice'
 }]
 
+const departmentQuestion = [{
+  type: "input",
+  message: "Enter department name: ",
+  name: "name"
+}]
+
 async function init() {
     const response = await inquirer.prompt(questions)
 
@@ -44,32 +50,48 @@ async function init() {
         case 'View all departments':
             check('View all departments')
             break;
+            case 'View all roles':
+              check('View all roles')
+              break;
+              case 'View all employees':
+                check('View all employees')
+                break;
+                case 'add a department':
+                addDepartment()
+                break;
     }
 }
 
-function check(name) {
+function check(name, response) {
   if(name === 'View all departments') {
-  db.query(sql ,movieNamed, function (err, results) {
-      console.log(JSON.stringify(results))
-      res.send(JSON.stringify(movieNamed))
+  db.query(`SELECT * FROM department`, function (err, results) {
+      console.log(results)  
     })
 
       init()
     }
 
   if(name === 'View all roles') {
+    db.query(`SELECT * FROM role`, function (err, results) {
+      console.log(results)  
+    })
     
       init()
       }
 
   if(name === 'View all employees') {
+    db.query(`SELECT * FROM employee`, function (err, results) {
+      console.log(results)  
+    })
     
       init()
       }
 
 
-  if(name === 'View all departments') {
-    
+  if(name === 'add a department') {
+    db.query(`INSERT INTO department (name) VALUES (?)`,response, function (err, results) { 
+    })
+
       init()
       }
       
@@ -86,4 +108,10 @@ function check(name) {
           
       init()
       }
+}
+
+
+async function addDepartment() {
+  const response = await inquirer.prompt(departmentQuestion)
+  check("add a department", response.name)
 }
