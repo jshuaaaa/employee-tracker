@@ -23,22 +23,22 @@ const db = mysql.createConnection(
     init();
   });
 
-// Questions for database selection
+// Selection
 const questions = [{
     
         type: 'list',
-        message: "Choose a license for your project.",
+        message: "Choose what you would like to do.",
         choices: ['View all departments', 'View all roles', 'View all employees', 'add a department', 'add a role', 'add an employee', 'update an employee role', 'Quit'],
         name: 'choice'
 }]
-
+// Questions for adding a department
 const departmentQuestion = [{
   type: "input",
   message: "Enter department name: ",
   name: "name"
 }]
 
-
+// questions for adding a role
 const roleQuestions = [{
   type: "input",
   message: "Enter the role title: ",
@@ -54,7 +54,7 @@ const roleQuestions = [{
   }
   ]
 
-
+// questions for adding employee
   const employeeQuestions = [{
     type: "input",
     message: "Enter the employee's first name: ",
@@ -73,7 +73,7 @@ const roleQuestions = [{
   message: "What is their manager's id?: ",
   name: "manager_id"
 }]
-
+// questions for updating an employee
   const updateEmployeeQuestions = [{
     type: "input",
     message: "Enter the id of the employee who's role you would like to change: ",
@@ -84,7 +84,7 @@ const roleQuestions = [{
       name: "role"
     },
     ]
-
+// init function that runs questions
 async function init() {
     const response = await inquirer.prompt(questions)
 
@@ -92,7 +92,7 @@ async function init() {
         console.log('Program ended, press CTRL+C to stop server')
         
     }
-    
+    // switch statement which is used to parse data to check function based on what user selected
     switch (response.choice) {
         case 'View all departments':
             check('View all departments')
@@ -117,7 +117,7 @@ async function init() {
                   break;
     }
 }
-
+// Function that checks for what the user selected
 function check(name, response) {
   if(name === 'View all departments') {
   db.query(`SELECT * FROM department`, function (err, res) {
@@ -179,22 +179,22 @@ function check(name, response) {
       }
 }
 
-
+// function to add a department
 async function addDepartment() {
   const response = await inquirer.prompt(departmentQuestion)
   check("add a department", response.name)
 }
-
+// function to add a role
 async function addRole() {
   const response = await inquirer.prompt(roleQuestions)
   check("add a role", response)
 }
-
+// function to add an employee
 async function addEmployee() {
   const response = await inquirer.prompt(employeeQuestions)
   check("add an employee", response)
 }
-
+// function to update an employee's existing data
 async function updateEmployee() {
   const response = await inquirer.prompt(updateEmployeeQuestions)
   check('update an employee role', response)
