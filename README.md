@@ -16,6 +16,8 @@
   *Steps required to install project and how to get the development environment running:*
   
   clone or fork the repo and do "npm i"
+
+  Link to a video demonstration: https://drive.google.com/file/d/170kJUqlvNwy07mgZ9hcZpziovpXX_xUW/view
   
   ## License
   
